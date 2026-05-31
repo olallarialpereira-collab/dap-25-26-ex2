@@ -1,0 +1,24 @@
+name: Build and Push MariaDB Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Paso 1 - Obtener codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: Paso 2 - Iniciar sesion en Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Paso 3 - Construir imagen personalizada de MariaDB
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/dap-mariadb-sakila:latest .
+
+      - name: Paso 4 - Empujar imagen a Docker Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/dap-mariadb-sakila:latest
